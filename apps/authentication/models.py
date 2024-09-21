@@ -9,6 +9,26 @@ from apps import db, login_manager
 
 from apps.authentication.util import hash_pass
 
+class Invoices(db.Model):
+
+    __tablename__ = 'Invoices'
+
+    id = db.Column(db.Integer, primary_key=True)
+    email_id = db.Column(db.Integer)
+    sender = db.Column(db.String(255),)
+    amount = db.Column(db.Integer,)
+    date = db.Column(db.String(64),)
+    file_path = db.Column(db.String(255), nullable=False)
+
+class Emails(db.Model):
+
+    __tablename__ = 'Emails'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    email = db.Column(db.String(64), unique=True)
+    token_data = db.Column(db.Text, nullable=False)
+
 class Users(db.Model, UserMixin):
 
     __tablename__ = 'Users'
@@ -46,3 +66,4 @@ def request_loader(request):
     username = request.form.get('username')
     user = Users.query.filter_by(username=username).first()
     return user if user else None
+

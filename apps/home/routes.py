@@ -38,6 +38,9 @@ def route_template(template):
         return render_template('home/page-500.html'), 500
 
 
+
+
+
 # Helper - Extract current page name from request
 def get_segment(request):
 
