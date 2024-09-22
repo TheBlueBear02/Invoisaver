@@ -17435,12 +17435,31 @@ pre[class*="language-"] {
   font-size: large;
   font-weight: bold;
   margin-top: 5px;
+  color: white;
 }
-.add-button:hover{
-  background-color: blue;
-}
+.invoices_btn:hover{    
+  background-image: linear-gradient(195deg, #1A73E8 0%, #1A73E8 40%); }
+
+.email-button:hover{
+  background-image: linear-gradient(195deg, #43A047  0%, #43A047  40%); }
 
 .invoice_img{
   width: 100px;
   height: 100px;
+}
+
+.loading-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 20px;
 }

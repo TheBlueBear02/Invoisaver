@@ -143,7 +143,7 @@ def save_invoices():
     user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
     if user_email:
         creds = user_email.token_data
-        invoices_folder = r'D:\Projects\invoisaver\Invoices'
+        invoices_folder = r'D:\Projects\invoisaver\apps\static\assets\invoices'
 
         gmail = Gmail()  # Pass the credentials to the Gmail class
 
