@@ -21,14 +21,17 @@ def get_invoices():
 @blueprint.route('/index')
 @login_required
 def index():
+
     invoices = []
     invoices_count = 0
+    user_email = None
     try:
-        invoices = get_invoices()
+        user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
+        invoices = Invoices.query.filter_by(email_id=user_email.id)
         invoices_count = invoices.count()
     except:
         print(f"no invoices")
-    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count)
+    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count,user_email = user_email)
 
 
 @blueprint.route('/<template>')

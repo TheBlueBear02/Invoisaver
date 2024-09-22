@@ -143,65 +143,67 @@ def save_invoices():
     user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
     if user_email:
         creds = user_email.token_data
-    invoices_folder = r'D:\Projects\invoisaver\Invoices'
+        invoices_folder = r'D:\Projects\invoisaver\Invoices'
 
-    gmail = Gmail()  # Pass the credentials to the Gmail class
+        gmail = Gmail()  # Pass the credentials to the Gmail class
 
-    query_params = { # select the list of email you want to get from the Gmail inbox
-    "newer_than": (31, "day"),
-    #"unread": False,
-    }
-    mails = gmail.get_messages(query=construct_query(query_params)) # run the query and get list of emails
-    
-    for message in mails:
-        # Changing the date format to be more clear
-        date_string = message.date.split()[0]
-        date_obj = datetime.strptime(date_string, '%Y-%m-%d')
-        clear_date = date_obj.strftime('%d-%m-%Y')
-        clear_time = ":".join(message.date.split()[1].split(":")[:2])
-        clear_time_date = re.sub(r'[<>:"/\\|?*]', '-', clear_date + '_' + clear_time)
-        safe_filename = re.sub(r'[<>:"/\\|?*]', '_', message.subject + '_' + clear_time_date) # change the file name to a safe name so you can save it on your pc
-        email_id = user_email.id
+        query_params = { # select the list of email you want to get from the Gmail inbox
+        "newer_than": (31, "day"),
+        #"unread": False,
+        }
+        mails = gmail.get_messages(query=construct_query(query_params)) # run the query and get list of emails
         
-        os.makedirs(invoices_folder + '\\' + str(email_id), exist_ok=True)  # exist_ok=True prevents errors if the folder already exists
+        for message in mails:
+            # Changing the date format to be more clear
+            date_string = message.date.split()[0]
+            date_obj = datetime.strptime(date_string, '%Y-%m-%d')
+            clear_date = date_obj.strftime('%d-%m-%Y')
+            clear_time = ":".join(message.date.split()[1].split(":")[:2])
+            clear_time_date = re.sub(r'[<>:"/\\|?*]', '-', clear_date + '_' + clear_time)
+            safe_filename = re.sub(r'[<>:"/\\|?*]', '_', message.subject + '_' + clear_time_date) # change the file name to a safe name so you can save it on your pc
+            email_id = user_email.id
+            
+            os.makedirs(invoices_folder + '\\' + str(email_id), exist_ok=True)  # exist_ok=True prevents errors if the folder already exists
 
-        file_path = invoices_folder + '\\' + str(email_id) + '\\' + safe_filename + '.pdf' # set the new pdf name
+            file_path = invoices_folder + '\\' + str(email_id) + '\\' + safe_filename + '.pdf' # set the new pdf name
 
-        if os.path.exists(file_path): # checks if the pdf name already exists in the directory, if not continue
-            print('All invoices are saved!')
-            break
-        else: 
-            if any(word in message.subject for word in ['חשבונית', 'invoice', 'receipt', 'קבלה', 'bill']): # if the email subject contains these words continue 
-                if message.attachments: # if the mail contains pdf/image/file save the attachments
-                    for attm in message.attachments:
-                        attm.save(filepath=file_path) # save the file
-                        print('Saved attachment of : ' + safe_filename)
-                                                
-                        new_invoice = Invoices(
-                            email_id= email_id,
-                            sender=message.sender,      
-                            amount= None,
-                            date = clear_date,
-                            file_path = file_path
-                        )
-                        db.session.add(new_invoice)
-       
-                elif message.html: # if the email doesn't contain attachments, save the mail content as pdf
-                    html_content = message.html
-                    try:
-                        HTML(string=html_content).write_pdf(file_path, optimize_size=False)# Convert the HTML content to PDF and save it
-                        print('Saved: ' + safe_filename + " content as pdf")
-                        print(message.sender)
+            if os.path.exists(file_path): # checks if the pdf name already exists in the directory, if not continue
+                print('All invoices are saved!')
+                break
+            else: 
+                if any(word in message.subject for word in ['חשבונית', 'invoice', 'receipt', 'קבלה', 'bill']): # if the email subject contains these words continue 
+                    if message.attachments: # if the mail contains pdf/image/file save the attachments
+                        for attm in message.attachments:
+                            attm.save(filepath=file_path) # save the file
+                            print('Saved attachment of : ' + safe_filename)
+                                                    
+                            new_invoice = Invoices(
+                                email_id= email_id,
+                                sender=message.sender,      
+                                amount= None,
+                                date = clear_date,
+                                file_path = file_path
+                            )
+                            db.session.add(new_invoice)
+        
+                    elif message.html: # if the email doesn't contain attachments, save the mail content as pdf
+                        html_content = message.html
+                        try:
+                            HTML(string=html_content).write_pdf(file_path, optimize_size=False)# Convert the HTML content to PDF and save it
+                            print('Saved: ' + safe_filename + " content as pdf")
+                            print(message.sender)
 
-                    except Exception:
-                        print('Cannot save this mail as html: ' + safe_filename)
-                    else:
-                        continue
-                            
-                db.session.commit()  # Commit the transaction
+                        except Exception:
+                            print('Cannot save this mail as html: ' + safe_filename)
+                        else:
+                            continue
+                                
+                    db.session.commit()  # Commit the transaction
 
-            else:
-                continue
+                else:
+                    continue
+        else:
+            return redirect(url_for('home_blueprint.index'))
     return redirect(url_for('home_blueprint.index'))
 
 

@@ -43,6 +43,7 @@
             </div>
           </div>
         </div>
+        {% if user_email == None %}
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
@@ -56,31 +57,41 @@
                     <button class="add-button bg-gradient-light shadow-success">Connect Email</button>
                   </form>
                 </div>             
-               </div>
             </div>
             <hr class="dark horizontal my-0">
-           
+            <div class="card-footer p-1"></div>
+            </div>
           </div>
         </div>
-        <div class="col-xl-3 col-sm-6">
+        {% else %}
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
           <div class="card">
             <div class="card-header p-3 pt-2">
-              <div class="icon icon-lg icon-shape bg-gradient-warning shadow-warning text-center border-radius-xl mt-n4 position-absolute">
-                <i class="material-icons opacity-10">receipt_long</i>
+              <div class="icon icon-lg icon-shape bg-gradient-success shadow-success text-center border-radius-xl mt-n4 position-absolute">
+                <i class="material-icons opacity-10">email</i>
               </div>
-              <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Add invoice's email</p>
-              </div>
+              <div class="text-center my-4">
+                  <i class="material-icons ">check</i>
+                  <h5 class="opacity-6"> Email Connected</h5>
+                  
+                    <div class="card-footer p-1"></div>
+              </div>             
+            </div>
+
+          </div>
+        </div>
+        {% endif %}
+        <div class="col-xl-3 col-sm-6">
             <div>
               <form action="/save-invoices" method="POST">
-                <button class="add-button bg-gradient-light shadow-warning">Save invoices</button>
+                <button class="add-button bg-gradient-warning shadow-success"><i class="material-icons opacity-10">receipt_long</i> Save invoices</button>
               </form>
-            </div>
             </div>
             <hr class="dark horizontal my-0">
           </div>
         </div>
       </div>
+      <!--
       <div class="row mt-4">
         <div class="col-lg-4 col-md-6 mt-4 mb-4">
           <div class="card z-index-2 ">
@@ -143,8 +154,9 @@
           </div>
         </div>
       </div>
+    -->
       <div class="row mb-4">
-        <div class="col-lg-8 col-md-6 mb-md-0 mb-4">
+        <div class="col-lg-7 col-md-6 mb-md-0 mb-2 mx-4">
           <div class="card">
             <div class="card-header pb-0">
               <div class="row">
@@ -152,7 +164,7 @@
                   <h6>Invoices</h6>
                   <p class="text-sm mb-0">
                     <i class="fa fa-check text-info" aria-hidden="true"></i>
-                    <span class="font-weight-bold ms-1">{{ invoices_count }}</span> this month
+                    <span class="font-weight-bold ms-1">{{ invoices_count }}</span> new invocies this month
                   </p>
                 </div>
                 <div class="col-lg-6 col-5 my-auto text-end">
@@ -175,7 +187,7 @@
                   <thead>
                     <tr>
                       <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Companies</th>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Cost</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Amount</th>
                       <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Date</th>
                       <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">File</th>
                     </tr>
@@ -186,7 +198,7 @@
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="static\assets\img\logos\gmail.png" class="avatar avatar-sm me-3" alt="xd">
+                            <img src="static\assets\img\logos\invoice_logo.png" class="avatar avatar-sm me-3" alt="xd">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
                             <h6 class="mb-0 text-sm">{{invoice.sender}}</h6>
