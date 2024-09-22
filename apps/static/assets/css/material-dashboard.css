@@ -17439,3 +17439,8 @@ pre[class*="language-"] {
 .add-button:hover{
   background-color: blue;
 }
+
+.invoice_img{
+  width: 100px;
+  height: 100px;
+}

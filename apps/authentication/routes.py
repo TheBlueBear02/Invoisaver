@@ -161,7 +161,8 @@ def save_invoices():
         clear_time = ":".join(message.date.split()[1].split(":")[:2])
         clear_time_date = re.sub(r'[<>:"/\\|?*]', '-', clear_date + '_' + clear_time)
         safe_filename = re.sub(r'[<>:"/\\|?*]', '_', message.subject + '_' + clear_time_date) # change the file name to a safe name so you can save it on your pc
-        email_id= user_email.id
+        email_id = user_email.id
+        
         os.makedirs(invoices_folder + '\\' + str(email_id), exist_ok=True)  # exist_ok=True prevents errors if the folder already exists
 
         file_path = invoices_folder + '\\' + str(email_id) + '\\' + safe_filename + '.pdf' # set the new pdf name
@@ -181,7 +182,7 @@ def save_invoices():
                             sender=message.sender,      
                             amount= None,
                             date = clear_date,
-                            file_path = file_path      
+                            file_path = file_path
                         )
                         db.session.add(new_invoice)
        

@@ -7,13 +7,28 @@ from apps.home import blueprint
 from flask import render_template, request
 from flask_login import login_required
 from jinja2 import TemplateNotFound
-
+from apps.authentication.models import *
+from flask_login import (
+    current_user,
+    login_user,
+    logout_user
+)
+def get_invoices():
+    user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
+    invoices = Invoices.query.filter_by(email_id=user_email.id)
+    return invoices
 
 @blueprint.route('/index')
 @login_required
 def index():
-
-    return render_template('home/index.html', segment='index')
+    invoices = []
+    invoices_count = 0
+    try:
+        invoices = get_invoices()
+        invoices_count = invoices.count()
+    except:
+        print(f"no invoices")
+    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count)
 
 
 @blueprint.route('/<template>')
