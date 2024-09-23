@@ -54,7 +54,7 @@
                 <p class="text-sm mb-0 text-capitalize">Connect your business email</p>
                 <div>
                   <form action="/add-email" method="POST">
-                    <button class="email-button add-button bg-gradient-success shadow-success">Connect Email</button>
+                    <button class="email-button add-button bg-gradient-success shadow-dark">Connect Email</button>
                   </form>
                 </div>             
             </div>
@@ -64,7 +64,7 @@
         </div>
         <div class="col-xl-3 col-sm-6 my-4" style="width: 20%; font-weight: bold;">
           <div>
-              <button style="cursor: default;" class=" add-button bg-gradient-light shadow-info"><i class="material-icons opacity-10">receipt_long</i> Get New Invoices</button>
+              <button style="cursor: default;" class=" add-button bg-gradient-light shadow-dark"><i class="material-icons opacity-10">receipt_long</i> Get New Invoices</button>
           </div>
           <hr class="dark horizontal my-0">
         </div>
@@ -86,6 +86,7 @@
 
           </div>
         </div>
+        
         <div class="col-xl-3 col-sm-6 my-4" style="width: 20%; font-weight: bold;">
           <div>
             <form action="/save-invoices" method="POST">
@@ -95,6 +96,8 @@
           <hr class="dark horizontal my-0">
         </div>
       </div>
+
+      
         {% endif %}
         
       </div>
@@ -201,7 +204,7 @@
                   </thead>
                   <tbody>
                   {% for invoice in invoices %}
-                    <tr>
+                    <tr class="invoice-row" data-file="{{ url_for('static', filename=invoice.file_path) }}">
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
@@ -224,6 +227,7 @@
                         </iframe>
                         </td>
                     </tr>
+                    
                     {% endfor %}
                   </tbody>
                 </table>
@@ -301,20 +305,18 @@
           </div>
         </div>
       </div>
-
-      <!-- Custom modal structure -->
-      <div class="modal-backdrop" id="pdfModal">
-        <div class="modal-content">
-            <button class="close-btn" id="closeModal">&times;</button>
-            <!-- Larger iframe inside the modal -->
-            <iframe 
-                src="{{ url_for('static', filename='assets/Invoices/1/Purchase receipt_08-09-2024_20-07.pdf') }}" 
-                class="modal-iframe">
-            </iframe>
-        </div>
-    </div>
+      
       {% include 'includes/footer.html' %}
     </div>
+                  
+   <!-- Custom modal structure -->
+<div class="modal-backdrop" id="pdfModal" style="display:none;">
+  <div class="modal-content">
+      <button class="close-btn" id="closeModal">&times;</button>
+      <!-- Larger iframe inside the modal -->
+      <iframe src="" class="modal-iframe" id="modalIframe"></iframe>
+  </div>
+</div>
   <!-- Loading Popup -->
   <div id="loadingOverlay" class="loading-overlay" style="display: none;">
     Loading, please wait...
@@ -329,27 +331,34 @@
 
   <script src="/static/assets/js/plugins/chartjs.min.js"></script>
   <script>
-       // Get modal and close button elements
-       const modal = document.getElementById('pdfModal');
-        const closeModal = document.getElementById('closeModal');
-        const smallIframe = document.getElementById('smallIframe');
+     document.querySelectorAll('.invoice-row').forEach(row => {
+        row.addEventListener('click', function() {
+        const fileSrc = this.getAttribute('data-file');
+        const modalIframe = document.getElementById('modalIframe');
 
-        // Show the modal when the small iframe is clicked
-        smallIframe.addEventListener('click', function() {
-            modal.style.display = 'flex'; // Display the modal
-        });
+        // Set the iframe source to the clicked row's invoice file
+        modalIframe.src = fileSrc;
 
-        // Hide the modal when the close button is clicked
-        closeModal.addEventListener('click', function() {
-            modal.style.display = 'none'; // Hide the modal
-        });
+        // Show the modal
+        document.getElementById('pdfModal').style.display = 'block';
+        console.log('show')
+    });
+});
 
-        // Hide the modal when clicking outside the modal content
-        window.addEventListener('click', function(event) {
-            if (event.target === modal) {
-                modal.style.display = 'none'; // Hide the modal if clicked outside content
-            }
-        });
+// Close the modal when the close button is clicked
+document.getElementById('closeModal').addEventListener('click', function() {
+    document.getElementById('pdfModal').style.display = 'none';
+    document.getElementById('modalIframe').src = ''; // Clear the iframe source
+});
+
+// Close the modal when clicking outside of the modal content
+window.onclick = function(event) {
+    const modal = document.getElementById('pdfModal');
+    if (event.target === modal) {
+        modal.style.display = 'none';
+        document.getElementById('modalIframe').src = ''; // Clear the iframe source
+    }
+};
 
     var ctx = document.getElementById("chart-bars").getContext("2d");
 

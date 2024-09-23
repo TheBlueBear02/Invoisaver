@@ -17450,9 +17450,11 @@ pre[class*="language-"] {
   height: 15vh; /* Adjust height as needed */
   cursor: pointer; /* Shows the user that it is clickable */
   overflow: hidden; /* Hides scrollbars */
+}
+.invoice-row{
+  cursor: pointer; /* Shows the user that it is clickable */
 
 }
-
 .loading-overlay {
   display: none;
   position: fixed;
@@ -17482,23 +17484,26 @@ pre[class*="language-"] {
     justify-content: center;
     align-items: center;
     z-index: 1000; /* Layer above other content */
+
 }
 
 /* Modal content */
 .modal-content {
     position: relative;
-    width: 80%;
     max-width: 1000px; /* Limit modal width */
     background: #fff;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-left: 25%;
+    margin-top: 2%;
+
 }
 
 /* Larger iframe inside the modal */
 .modal-iframe {
     width: 100%;
-    height: 80vh;
+    height: 90vh;
     border: none;
 }
 
