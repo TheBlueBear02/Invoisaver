@@ -16,8 +16,8 @@
                 <i class="material-icons opacity-10">receipt_long</i>
               </div>
               <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                <h4 class="mb-0">$53k</h4>
+                <p class="text-sm mb-0 text-capitalize">Total Invoices</p>
+                <h4 class="mb-0">{{invoices_count}}</h4>
               </div>
             </div>
             <hr class="dark horizontal my-0">
@@ -33,7 +33,7 @@
                 <i class="material-icons opacity-10">person</i>
               </div>
               <div class="text-end pt-1">
-                <p class="text-sm mb-0 text-capitalize">Today's Users</p>
+                <p class="text-sm mb-0 text-capitalize">Total Suppliers</p>
                 <h4 class="mb-0">2,300</h4>
               </div>
             </div>
@@ -217,9 +217,12 @@
                       
                         <td class="align-middle text-center text-sm">
                         <span class="text-xs font-weight-bold">{{invoice.date}}</span>
-                      <td class="align-middle">
-                        <iframe src="{{ invoice.file_path }}" width="100%" height="100px"></iframe>
-                      </td>
+                      <td class="align-middle"> 
+                        <!-- Iframe to display the PDF -->
+                        <iframe src="{{ url_for('static', filename=invoice.file_path) }}" class="pdf-viewer" id="smallIframe">
+                          Your browser does not support iframes. You can download the PDF file 
+                        </iframe>
+                        </td>
                     </tr>
                     {% endfor %}
                   </tbody>
@@ -299,19 +302,55 @@
         </div>
       </div>
 
+      <!-- Custom modal structure -->
+      <div class="modal-backdrop" id="pdfModal">
+        <div class="modal-content">
+            <button class="close-btn" id="closeModal">&times;</button>
+            <!-- Larger iframe inside the modal -->
+            <iframe 
+                src="{{ url_for('static', filename='assets/Invoices/1/Purchase receipt_08-09-2024_20-07.pdf') }}" 
+                class="modal-iframe">
+            </iframe>
+        </div>
+    </div>
       {% include 'includes/footer.html' %}
     </div>
   <!-- Loading Popup -->
   <div id="loadingOverlay" class="loading-overlay" style="display: none;">
     Loading, please wait...
   </div>
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+
   <script src="/static/assets/js/plugins/chartjs.min.js"></script>
   <script>
-    
+       // Get modal and close button elements
+       const modal = document.getElementById('pdfModal');
+        const closeModal = document.getElementById('closeModal');
+        const smallIframe = document.getElementById('smallIframe');
+
+        // Show the modal when the small iframe is clicked
+        smallIframe.addEventListener('click', function() {
+            modal.style.display = 'flex'; // Display the modal
+        });
+
+        // Hide the modal when the close button is clicked
+        closeModal.addEventListener('click', function() {
+            modal.style.display = 'none'; // Hide the modal
+        });
+
+        // Hide the modal when clicking outside the modal content
+        window.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                modal.style.display = 'none'; // Hide the modal if clicked outside content
+            }
+        });
+
     var ctx = document.getElementById("chart-bars").getContext("2d");
 
     new Chart(ctx, {

@@ -17443,9 +17443,14 @@ pre[class*="language-"] {
 .email-button:hover{
   background-image: linear-gradient(195deg, #43A047  0%, #43A047  40%); }
 
-.invoice_img{
-  width: 100px;
-  height: 100px;
+.pdf-viewer {
+  float: right;
+  margin-right: 15%;
+  width: 70%;
+  height: 15vh; /* Adjust height as needed */
+  cursor: pointer; /* Shows the user that it is clickable */
+  overflow: hidden; /* Hides scrollbars */
+
 }
 
 .loading-overlay {
@@ -17462,4 +17467,54 @@ pre[class*="language-"] {
   align-items: center;
   color: #fff;
   font-size: 20px;
+  
+}
+
+  /* Modal backdrop */
+  .modal-backdrop {
+    display: none; /* Hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent background */
+    justify-content: center;
+    align-items: center;
+    z-index: 1000; /* Layer above other content */
+}
+
+/* Modal content */
+.modal-content {
+    position: relative;
+    width: 80%;
+    max-width: 1000px; /* Limit modal width */
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Larger iframe inside the modal */
+.modal-iframe {
+    width: 100%;
+    height: 80vh;
+    border: none;
+}
+
+/* Close button */
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: #ff5c5c;
+    border: none;
+    color: white;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 18px;
+    text-align: center;
+    line-height: 30px;
 }

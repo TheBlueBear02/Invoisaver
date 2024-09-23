@@ -47,7 +47,6 @@ def login():
 
         # Check the password
         if user and verify_pass(password, user.password):
-
             login_user(user)
             return redirect(url_for('authentication_blueprint.route_default'))
 
@@ -143,12 +142,12 @@ def save_invoices():
     user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
     if user_email:
         creds = user_email.token_data
-        invoices_folder = r'D:\Projects\invoisaver\apps\static\assets\invoices'
+        invoices_folder = 'D:\Projects\invoisaver\\apps\static\\assets\Invoices'
 
         gmail = Gmail()  # Pass the credentials to the Gmail class
 
         query_params = { # select the list of email you want to get from the Gmail inbox
-        "newer_than": (31, "day"),
+        "newer_than": (20, "day"),
         #"unread": False,
         }
         mails = gmail.get_messages(query=construct_query(query_params)) # run the query and get list of emails
@@ -165,7 +164,7 @@ def save_invoices():
             
             os.makedirs(invoices_folder + '\\' + str(email_id), exist_ok=True)  # exist_ok=True prevents errors if the folder already exists
 
-            file_path = invoices_folder + '\\' + str(email_id) + '\\' + safe_filename + '.pdf' # set the new pdf name
+            file_path = invoices_folder + '/' + str(email_id) + '/' + safe_filename + '.pdf' # set the new pdf name
 
             if os.path.exists(file_path): # checks if the pdf name already exists in the directory, if not continue
                 print('All invoices are saved!')
@@ -182,7 +181,7 @@ def save_invoices():
                                 sender=message.sender,      
                                 amount= None,
                                 date = clear_date,
-                                file_path = file_path
+                                file_path = 'assets/Invoices/'+str(email_id) + '/' + safe_filename + '.pdf'
                             )
                             db.session.add(new_invoice)
         
