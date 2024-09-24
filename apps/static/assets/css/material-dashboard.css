@@ -17446,14 +17446,19 @@ pre[class*="language-"] {
 .pdf-viewer {
   float: right;
   margin-right: 15%;
-  width: 70%;
-  height: 15vh; /* Adjust height as needed */
+  width: 10rem;
+  height: 8rem; /* Adjust height as needed */
   cursor: pointer; /* Shows the user that it is clickable */
   overflow: hidden; /* Hides scrollbars */
+  border-radius: 15px;
 }
 .invoice-row{
   cursor: pointer; /* Shows the user that it is clickable */
 
+}
+.invoice-row:hover{
+  cursor: pointer; /* Shows the user that it is clickable */
+  background-color: rgba(20, 20, 255, 0.1);
 }
 .loading-overlay {
   display: none;

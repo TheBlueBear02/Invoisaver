@@ -196,7 +196,8 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Companies</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Title</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7">From</th>
                       <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Amount</th>
                       <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">Date</th>
                       <th class="text-center text-uppercase text-secondary text-xs font-weight-bolder opacity-7">File</th>
@@ -205,21 +206,26 @@
                   <tbody>
                   {% for invoice in invoices %}
                     <tr class="invoice-row" data-file="{{ url_for('static', filename=invoice.file_path) }}">
-                      <td>
+                      <td class="align-middle ">
                         <div class="d-flex px-2 py-1">
                           <div>
                             <img src="static\assets\img\logos\invoice_logo.png" class="avatar avatar-sm me-3" alt="xd">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">{{invoice.sender}}</h6>
+                            <h6 class="mb-0 text-sm">{{invoice.title}}</h6>
                           </div>
                         </div>
                       </td>
+                      <td>
+                        <span class="text-xs font-weight-bold"> {{invoice.sender}} </span>
+
+                      </td>
                       <td class="align-middle ">
                         <span class="text-xs font-weight-bold"> $14,000 </span>
-                      
+                      </td>
                         <td class="align-middle text-center text-sm">
                         <span class="text-xs font-weight-bold">{{invoice.date}}</span>
+                        </td>
                       <td class="align-middle"> 
                         <!-- Iframe to display the PDF -->
                         <iframe src="{{ url_for('static', filename=invoice.file_path) }}" class="pdf-viewer" id="smallIframe">

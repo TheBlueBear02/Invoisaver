@@ -9,15 +9,25 @@ from apps import db, login_manager
 
 from apps.authentication.util import hash_pass
 
+class Suppliers(db.Model):
+
+    __tablename__ = 'Suppliers'
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    name = db.Column(db.String(64), nullable=False)
+    email = db.Column(db.String(255))
+
 class Invoices(db.Model):
 
     __tablename__ = 'Invoices'
 
     id = db.Column(db.Integer, primary_key=True)
     email_id = db.Column(db.Integer)
-    sender = db.Column(db.String(255),)
-    amount = db.Column(db.Integer,)
-    date = db.Column(db.String(64),)
+    title = db.Column(db.String(255), nullable=False)
+    sender = db.Column(db.String(255))
+    amount = db.Column(db.Integer)
+    date = db.Column(db.String(64))
     file_path = db.Column(db.String(255), nullable=False)
 
 class Emails(db.Model):

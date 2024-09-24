@@ -178,6 +178,7 @@ def save_invoices():
                                                     
                             new_invoice = Invoices(
                                 email_id= email_id,
+                                title = message.subject,
                                 sender=message.sender,      
                                 amount= None,
                                 date = clear_date,
