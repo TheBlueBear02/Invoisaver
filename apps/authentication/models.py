@@ -25,7 +25,7 @@ class Invoices(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     email_id = db.Column(db.Integer)
     title = db.Column(db.String(255), nullable=False)
-    sender = db.Column(db.String(255))
+    supplier_id = db.Column(db.Integer, nullable=False)
     amount = db.Column(db.Integer)
     date = db.Column(db.String(64))
     file_path = db.Column(db.String(255), nullable=False)

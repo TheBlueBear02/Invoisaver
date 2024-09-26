@@ -13,25 +13,26 @@ from flask_login import (
     login_user,
     logout_user
 )
-def get_invoices():
-    user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
-    invoices = Invoices.query.filter_by(email_id=user_email.id)
-    return invoices
 
 @blueprint.route('/index')
 @login_required
 def index():
-
     invoices = []
     invoices_count = 0
     user_email = None
     try:
+        # get the invoices data to present in dashboard
         user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
         invoices = Invoices.query.filter_by(email_id=user_email.id)
         invoices_count = invoices.count()
+    
+        # get the invoices data to present in dashboard
+        suppliers = Suppliers.query.filter_by(user_id=current_user.get_id(),)
+        suppliers_counter = suppliers.count()
+
     except:
         print(f"no invoices")
-    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count,user_email = user_email)
+    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count, suppliers=suppliers,supplier_count=suppliers_counter)
 
 
 @blueprint.route('/<template>')

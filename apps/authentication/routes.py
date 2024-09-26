@@ -24,7 +24,6 @@ from simplegmail.query import construct_query
 import os
 from datetime import datetime
 import re 
-from weasyprint import HTML
 
 @blueprint.route('/')
 def route_default():
@@ -106,7 +105,7 @@ def create_email_creds():
     scopes = ['https://www.googleapis.com/auth/gmail.readonly']
     credentials_file = 'client_secret.json'  # Path to your OAuth 2.0 credentials file
 
-    flow = InstalledAppFlow.from_client_secrets_file(credentials_file, scopes)
+    flow = InstalledAppFlow.from_client_secrets_file(credentials_file, scopes,redirect_uri='https://localhost:/')
     creds = flow.run_local_server(port=0)
     return creds
 
@@ -140,9 +139,10 @@ def add_email():
 @blueprint.route('/save-invoices', methods=['POST'])
 def save_invoices():
     user_email = Emails.query.filter_by(user_id=current_user.get_id()).first()
+
     if user_email:
         creds = user_email.token_data
-        invoices_folder = 'D:\Projects\invoisaver\\apps\static\\assets\Invoices'
+        invoices_folder = 'apps\static\\assets\Invoices'
 
         gmail = Gmail()  # Pass the credentials to the Gmail class
 
@@ -151,7 +151,8 @@ def save_invoices():
         #"unread": False,
         }
         mails = gmail.get_messages(query=construct_query(query_params)) # run the query and get list of emails
-        
+        email_id = user_email.id
+
         for message in mails:
             # Changing the date format to be more clear
             date_string = message.date.split()[0]
@@ -160,7 +161,6 @@ def save_invoices():
             clear_time = ":".join(message.date.split()[1].split(":")[:2])
             clear_time_date = re.sub(r'[<>:"/\\|?*]', '-', clear_date + '_' + clear_time)
             safe_filename = re.sub(r'[<>:"/\\|?*]', '_', message.subject + '_' + clear_time_date) # change the file name to a safe name so you can save it on your pc
-            email_id = user_email.id
             
             os.makedirs(invoices_folder + '\\' + str(email_id), exist_ok=True)  # exist_ok=True prevents errors if the folder already exists
 
@@ -171,15 +171,25 @@ def save_invoices():
                 break
             else: 
                 if any(word in message.subject for word in ['חשבונית', 'invoice', 'receipt', 'קבלה', 'bill']): # if the email subject contains these words continue 
+                    sender_words = message.sender.split()
+                    supplier_name = sender_words[0]
+                    supplier_email = sender_words[1].replace("<", "").replace(">", "")
+                    supplier_exist = Suppliers.query.filter_by(user_id=current_user.get_id(), email=supplier_email).first()
+
+                    if not supplier_exist: # Creates new supplier if doesn't exist
+                        new_supplier = Suppliers(user_id=current_user.get_id(),name=supplier_name,email=supplier_email)
+                        db.session.add(new_supplier)
+                        db.session.commit()  # Commit the transaction\ 
+                        supplier_exist = Suppliers.query.filter_by(user_id=current_user.get_id(), email=supplier_email).first()
+                    
                     if message.attachments: # if the mail contains pdf/image/file save the attachments
                         for attm in message.attachments:
                             attm.save(filepath=file_path) # save the file
-                            print('Saved attachment of : ' + safe_filename)
-                                                    
+                            print('Saved attachment of : ' + safe_filename)                         
                             new_invoice = Invoices(
                                 email_id= email_id,
                                 title = message.subject,
-                                sender=message.sender,      
+                                supplier_id=supplier_exist.id,      
                                 amount= None,
                                 date = clear_date,
                                 file_path = 'assets/Invoices/'+str(email_id) + '/' + safe_filename + '.pdf'
@@ -189,7 +199,6 @@ def save_invoices():
                     elif message.html: # if the email doesn't contain attachments, save the mail content as pdf
                         html_content = message.html
                         try:
-                            HTML(string=html_content).write_pdf(file_path, optimize_size=False)# Convert the HTML content to PDF and save it
                             print('Saved: ' + safe_filename + " content as pdf")
                             print(message.sender)
 
@@ -197,7 +206,8 @@ def save_invoices():
                             print('Cannot save this mail as html: ' + safe_filename)
                         else:
                             continue
-                                
+                       
+                 
                     db.session.commit()  # Commit the transaction
 
                 else:

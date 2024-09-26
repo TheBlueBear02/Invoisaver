@@ -17528,3 +17528,12 @@ pre[class*="language-"] {
     text-align: center;
     line-height: 30px;
 }
+ /* Ensure the title wraps to the next line if needed (alternative to ellipsis) */
+.title-column-wrap {
+  max-width: 100px;
+  white-space: normal; /* Allow text to wrap */
+  word-wrap: break-word; /* Break long words */
+  text-overflow: ellipsis; /* Adds "..." when text overflows */
+  white-space: nowrap;
+  overflow: hidden;
+}
