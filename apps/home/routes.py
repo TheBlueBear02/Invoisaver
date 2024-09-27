@@ -29,10 +29,14 @@ def index():
         # get the invoices data to present in dashboard
         suppliers = Suppliers.query.filter_by(user_id=current_user.get_id(),)
         suppliers_counter = suppliers.count()
-
+        invoices_per_supplier = []
+        i = 0
+        for supplier in suppliers:
+            supplier_invoices = Invoices.query.filter_by(email_id=user_email.id,supplier=supplier.id)
+            invoices_per_supplier[i] = supplier_invoices.count()
     except:
         print(f"no invoices")
-    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count, suppliers=suppliers,supplier_count=suppliers_counter)
+    return render_template('home/index.html', segment='index', invoices = invoices, invoices_count= invoices_count, suppliers=suppliers,supplier_count=suppliers_counter,invoices_per_supplier=invoices_per_supplier)
 
 
 @blueprint.route('/<template>')
